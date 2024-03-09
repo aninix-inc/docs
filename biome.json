@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "ignore": [
+      "./src/legacy"
+    ]
+  },
+  "formatter": {
+    "enabled": false
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "style": {
+        "useImportType": "warn"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn"
+      },
+      "complexity": {
+        "noThisInStatic": "warn",
+        "noForEach": "warn",
+        "noStaticOnlyClass": "warn"
+      }
+    }
+  },
+  "organizeImports": {
+    "enabled": false
+  }
+}
