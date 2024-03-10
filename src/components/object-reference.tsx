@@ -133,7 +133,6 @@ export const ObjectReference: React.FC<
   object: providedObject,
   className,
   children,
-  test,
 }) => {
   const id = providedId ?? 'RenderJobCancelledEvent'
   const object = providedObject ?? localSchema.components.schemas[id]
