@@ -3,9 +3,6 @@ import starlight from '@astrojs/starlight'
 import tailwind from '@astrojs/tailwind'
 import { defineConfig } from 'astro/config'
 
-import mdx from '@astrojs/mdx'
-import { astroExpressiveCode } from '@astrojs/starlight/expressive-code'
-
 // https://astro.build/config
 export default defineConfig({
   integrations: [
@@ -33,15 +30,16 @@ export default defineConfig({
             directory: 'reference',
           },
         },
+        {
+          label: 'Render API',
+          autogenerate: {
+            directory: 'render-api',
+          },
+        },
       ],
       customCss: ['./src/tailwind.css'],
     }),
-    tailwind({
-      // Disable the default base styles:
-      applyBaseStyles: false,
-    }),
+    tailwind(),
     react(),
-    astroExpressiveCode(),
-    mdx(),
   ],
 })

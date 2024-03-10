@@ -1,0 +1,305 @@
+---
+title: Render Job Events Reference
+---
+
+import { ObjectReference } from '../../../components/object-reference'
+import schema from '../../../open-api/schema.json'
+
+<ObjectReference schema={schema} id="RenderJobInitiatedEvent">
+  **Example:**
+
+```json
+{
+  "id": "17100706970917267",
+  "type": "renderJob.initiated",
+  "entity": "event",
+  "apiVersion": 1,
+  "livemode": false,
+  "createdAt": "2024-03-10T11:38:17.815Z",
+  "current": {
+    "id": "ltlfxs0eejy3knru",
+    "status": "queued",
+    "apiVersion": 1,
+    "livemode": false,
+    "hash": "some-hash",
+    "ownerId": "user_aninix-admin",
+    "entity": "renderJob",
+    "storyboard": {
+      "projects": [
+        {
+          "snapshot": "example-snapshot.json",
+          "scaleFactor": 1,
+          "endInSeconds": 0,
+          "startInSeconds": 0
+        }
+      ],
+      "renderOptions": {
+        "fps": 60,
+        "audio": "string",
+        "format": "mp4",
+        "audioBitrate": 192,
+        "videoBitrate": 4000
+      }
+    },
+    "metadata": {},
+    "createdAt": "2024-03-10T11:38:13.646Z"
+  }
+}
+```
+
+</ObjectReference>
+
+<ObjectReference schema={schema} id="RenderJobQueuedEvent" className="mt-4">
+**Example:**
+
+```json
+{
+  "id": "ltlg2bxqryd2q6ms",
+  "type": "renderJob.queued",
+  "entity": "event",
+  "apiVersion": 1,
+  "livemode": false,
+  "createdAt": "2024-03-10T11:41:46.094Z",
+  "current": {
+    "id": "ltlg20c19sthf1sv",
+    "status": "queued",
+    "apiVersion": 1,
+    "livemode": false,
+    "hash": "some-hash",
+    "ownerId": "user_aninix-admin",
+    "entity": "renderJob",
+    "storyboard": {
+      "projects": [
+        {
+          "snapshot": "example-snapshot.json",
+          "scaleFactor": 1,
+          "endInSeconds": 0,
+          "startInSeconds": 0
+        }
+      ],
+      "renderOptions": {
+        "fps": 60,
+        "audio": "string",
+        "format": "mp4",
+        "audioBitrate": 192,
+        "videoBitrate": 4000
+      }
+    },
+    "metadata": {},
+    "createdAt": "2024-03-10T11:41:31.057Z",
+    "updatedAt": "2024-03-10T11:41:46.084Z"
+  }
+}
+```
+
+</ObjectReference>
+
+<ObjectReference
+  schema={schema}
+  id="RenderJobProcessStartedEvent"
+  className="mt-4"
+>
+**Example:**
+
+```json
+{
+  "id": "ltlfxvwgecur9tm2",
+  "type": "renderJob.processStarted",
+  "entity": "event",
+  "apiVersion": 1,
+  "livemode": false,
+  "createdAt": "2024-03-10T11:38:18.688Z",
+  "previous": {
+    "status": "queued"
+  },
+  "current": {
+    "id": "ltlfxs0eejy3knru",
+    "status": "processing",
+    "apiVersion": 1,
+    "livemode": false,
+    "hash": "some-hash",
+    "ownerId": "user_aninix-admin",
+    "entity": "renderJob",
+    "storyboard": {
+      "projects": [
+        {
+          "snapshot": "example-snapshot.json",
+          "scaleFactor": 1,
+          "endInSeconds": 0,
+          "startInSeconds": 0
+        }
+      ],
+      "renderOptions": {
+        "fps": 60,
+        "audio": "string",
+        "format": "mp4",
+        "audioBitrate": 192,
+        "videoBitrate": 4000
+      }
+    },
+    "metadata": {},
+    "createdAt": "2024-03-10T11:38:13.646Z",
+    "updatedAt": "2024-03-10T11:38:18.671Z"
+  }
+}
+```
+
+</ObjectReference>
+
+<ObjectReference
+  schema={schema}
+  id="RenderJobCompletedEvent"
+  className="mt-4"
+>
+**Example:**
+
+```json
+{
+  "id": "ltlfy3lui1a22vk7",
+  "type": "renderJob.completed",
+  "entity": "event",
+  "apiVersion": 1,
+  "livemode": false,
+  "createdAt": "2024-03-10T11:38:28.674Z",
+  "previous": {
+    "status": "processing",
+    "updatedAt": "2024-03-10T11:38:18.671Z"
+  },
+  "current": {
+    "id": "ltlfxs0eejy3knru",
+    "fileUrl": "/renders/8b5d1120-0419-41cd-9c09-f56b29144a88.mp4",
+    "status": "completed",
+    "apiVersion": 1,
+    "livemode": false,
+    "hash": "some-hash",
+    "ownerId": "user_aninix-admin",
+    "entity": "renderJob",
+    "storyboard": {
+      "projects": [
+        {
+          "snapshot": "example-snapshot.json",
+          "scaleFactor": 1,
+          "endInSeconds": 0,
+          "startInSeconds": 0
+        }
+      ],
+      "renderOptions": {
+        "fps": 60,
+        "audio": "string",
+        "format": "mp4",
+        "audioBitrate": 192,
+        "videoBitrate": 4000
+      }
+    },
+    "metadata": {},
+    "createdAt": "2024-03-10T11:38:13.646Z",
+    "updatedAt": "2024-03-10T11:38:28.669Z"
+  }
+}
+```
+
+</ObjectReference>
+
+<ObjectReference
+  schema={schema}
+  id="RenderJobCancelledEvent"
+  className="mt-4"
+>
+**Example:**
+
+```json
+{
+  "id": "ltlg2bxqryd2q6ms",
+  "type": "renderJob.cancelled",
+  "entity": "event",
+  "apiVersion": 1,
+  "livemode": false,
+  "createdAt": "2024-03-10T11:41:46.094Z",
+  "previous": {
+    "status": "queued",
+    "updatedAt": "2024-03-10T11:41:36.082Z"
+  },
+  "current": {
+    "id": "ltlg20c19sthf1sv",
+    "status": "cancelled",
+    "apiVersion": 1,
+    "livemode": false,
+    "hash": "some-hash",
+    "ownerId": "user_aninix-admin",
+    "entity": "renderJob",
+    "storyboard": {
+      "projects": [
+        {
+          "snapshot": "example-snapshot.json",
+          "scaleFactor": 1,
+          "endInSeconds": 0,
+          "startInSeconds": 0
+        }
+      ],
+      "renderOptions": {
+        "fps": 60,
+        "audio": "string",
+        "format": "mp4",
+        "audioBitrate": 192,
+        "videoBitrate": 4000
+      }
+    },
+    "metadata": {},
+    "createdAt": "2024-03-10T11:41:31.057Z",
+    "updatedAt": "2024-03-10T11:41:46.084Z"
+  }
+}
+```
+
+</ObjectReference>
+
+<ObjectReference schema={schema} id="RenderJobFailedEvent" className="mt-4" >
+**Example:**
+
+```json
+{
+  "id": "ltlg2bxqryd2q6ms",
+  "type": "renderJob.failed",
+  "entity": "event",
+  "apiVersion": 1,
+  "livemode": false,
+  "createdAt": "2024-03-10T11:41:46.094Z",
+  "previous": {
+    "status": "processing",
+    "updatedAt": "2024-03-10T11:41:36.082Z"
+  },
+  "current": {
+    "id": "ltlg20c19sthf1sv",
+    "failReason": "test_failed_status",
+    "failMessage": "TBD",
+    "status": "failed",
+    "apiVersion": 1,
+    "livemode": false,
+    "hash": "some-hash",
+    "ownerId": "user_aninix-admin",
+    "entity": "renderJob",
+    "storyboard": {
+      "projects": [
+        {
+          "snapshot": "example-snapshot.json",
+          "scaleFactor": 1,
+          "endInSeconds": 0,
+          "startInSeconds": 0
+        }
+      ],
+      "renderOptions": {
+        "fps": 60,
+        "audio": "string",
+        "format": "mp4",
+        "audioBitrate": 192,
+        "videoBitrate": 4000
+      }
+    },
+    "metadata": {},
+    "createdAt": "2024-03-10T11:41:31.057Z",
+    "updatedAt": "2024-03-10T11:41:46.084Z"
+  }
+}
+```
+
+</ObjectReference>

@@ -1,0 +1,101 @@
+---
+title: Events Specification
+---
+
+import { Mermaid } from '../../../components/mermaid'
+
+Every event in the Aninix system is coupled to a specific change in any resource. For example, when a new `RenderJob` is created, it triggers sending an event to the url specified in the webhook.
+
+:::note
+Every event includes 2 object states: `current` and `previous`. Aninix sends the complete object for `current`. And for `previuos`, only the fields that have changed are included. This allows the client to more accurately decide what to do based on the data received.
+:::
+
+For example, the status of `RenderJob` has changed from `processing` to `completed`, then the event of the following format will be sent:
+
+```json {9-10} {19-20}
+{
+  "id": "7af973c4-4ea2-41c0-bc17-dd6dccab99d3",
+  "entity": "event",
+  "apiVersion": "1",
+  "livemode": false,
+  "createdAt": "2024-02-18T18:30:00.000Z",
+  "type": "renderJob.completed",
+  "previous": {
+    "status": "processing",
+    "updatedAt": "2024-02-18T18:30:01.000Z"
+  },
+  "current": {
+    "id": "8b5d1120-0419-41cd-9c09-f56b29144a88",
+    "hash": "4a5d0436cbad9c29fbf09f036bc9bf7ff91ad463d8b932fb97a1f8d301a37ef2",
+    "name": "Sample project #1 🚀",
+    "storyboard": { ... },
+    "createdAt": "2024-02-18T18:30:00.000Z",
+    "updatedAt": "2024-02-18T18:35:00.000Z",
+    "status": "completed",
+    "fileUrl": "https://static.aninix.com/8b5d1120-0419-41cd-9c09-f56b29144a88.mp4",
+    "metadata": { ... }
+  }
+}
+```
+
+The same pattern is applied in the [webhooks](/render-api/webhooks-spec).
+
+## Realtime events on the frontend
+
+In order to get real-time information we use SSE (server-sent events) channels. They allow to send information about changes in resources in one-way.
+
+:::note
+Each resource has its own event channel, you can find it at this address: `/{resourceName}/{resourceId}/events`.
+:::
+
+When you first subscribe to the channel, an `InitiatedEvent` is sent immediately, which contains information about the current state of the resource.
+
+<Mermaid
+  graph={`
+sequenceDiagram
+    Client-->>Aninix API: SSE request
+    Aninix API-->>Client: Subscription confirmation
+    Aninix API->>Client: InitiatedEvent sent
+    Aninix API->>Client: ResourceUpdate event sent
+`}
+  client:idle
+/>
+
+Самый простой пример использования:
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <title>SSE Client Example</title>
+  </head>
+
+  <body>
+    <h1>SSE Client Example</h1>
+
+    <script>
+      const token = '{YOUR_TOKEN_HERE}'
+      const resourceName = 'render-jobs'
+      const resourceId = 'some-id'
+      const eventSource = new EventSource(
+        `https://apipi.aninix.com/${resourceName}/${resourceId}/events?token=${token}`
+      )
+
+      eventSource.addEventListener('open', () => {
+        console.log('SSE connection established')
+      })
+
+      eventSource.addEventListener('message', (event) => {
+        const eventData = JSON.parse(event.data)
+        console.log('Received SSE event:', eventData)
+        // Handle the received event data
+      })
+
+      eventSource.addEventListener('error', (error) => {
+        console.error('SSE error:', error)
+        // Handle SSE error
+      })
+    </script>
+  </body>
+</html>
+```

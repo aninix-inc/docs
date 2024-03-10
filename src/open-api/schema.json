@@ -1,0 +1,6486 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/system-statuses/editor": {
+      "get": {
+        "operationId": "SystemStatusesController_getEditorStatus",
+        "summary": "Returns current editor status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemStatus"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "System Statuses"
+        ]
+      }
+    },
+    "/versions/editor": {
+      "get": {
+        "operationId": "VersionsController_getEditorVersion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Versions"
+        ]
+      }
+    },
+    "/versions/plugin": {
+      "get": {
+        "operationId": "VersionsController_getPluginVersion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Versions"
+        ]
+      }
+    },
+    "/versions/widget": {
+      "get": {
+        "operationId": "VersionsController_getWidgetVersion",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Versions"
+        ]
+      }
+    },
+    "/healthchecks/main": {
+      "get": {
+        "operationId": "HealthchecksController_main",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Healthchecks"
+        ]
+      }
+    },
+    "/healthchecks/main/databases/read": {
+      "get": {
+        "operationId": "HealthchecksController_databaseRead",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Healthchecks"
+        ]
+      }
+    },
+    "/healthchecks/main/databases/write": {
+      "get": {
+        "operationId": "HealthchecksController_databaseWrite",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Healthchecks"
+        ]
+      }
+    },
+    "/analytics": {
+      "post": {
+        "operationId": "TrackEventController_track",
+        "summary": "Track analytics event",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrackEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/assets/{hash}": {
+      "get": {
+        "operationId": "GetAssetController_getAsset",
+        "summary": "Retrieve asset by hash",
+        "description": "You can use header `Aninix-Version: 'status'` to check if asset already uploaded or not.\n\nThis can be useful to save network and not upload every image.",
+        "parameters": [
+          {
+            "name": "hash",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Streamable bytes data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamableFile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Assets"
+        ]
+      }
+    },
+    "/assets": {
+      "post": {
+        "operationId": "UploadAssetController_uploadAsset",
+        "summary": "Create new asset for provided project",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadAssetRequestV2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Assets"
+        ]
+      }
+    },
+    "/auth/black-listed-emails": {
+      "get": {
+        "operationId": "GetBlackListedEmailsController_getBlackListedEmailsDeprecated",
+        "summary": "Use GET /black-listed-emails instead",
+        "deprecated": true,
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/black-listed-emails": {
+      "get": {
+        "operationId": "GetBlackListedEmailsController_getBlackListedEmails",
+        "summary": "Return list of unallowed domains",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/figma-auth-sessions": {
+      "post": {
+        "operationId": "CreateFigmaAuthSessionController_startFigmaAuthSession",
+        "summary": "Start new auth sessions with figma. Returns url to redirect user.",
+        "description": "1. It require userId to create new session;\n2. After that we can start figma auth session which generates unique `.sessionId` and `.authUrl`. Wrap it in FigmaAuthSession and sends back to user;\n3. Then user can navigate to provided url in **new tab** and start to listen to changes in the main tab (@TODO: add link to docs with websocket);\n4. Once user authenticated we proceed it through `CompleteFigmaAuthSessionCommand` and user receive required events via websocket (@TODO: add docs);\n5. At the end we redirect user to the app `https://app.aninix.com/auth` with status in query `?status=success` or `?status=error`",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFigmaAuthSessionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartFigmaAuthSessionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Figma Auth Sessions"
+        ]
+      }
+    },
+    "/figma-auth-sessions/{figmaAuthSessionId}": {
+      "get": {
+        "operationId": "GetFigmaAuthSessionController_getFigmaAuthSession",
+        "summary": "Return auth session",
+        "parameters": [
+          {
+            "name": "figmaAuthSessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FigmaAuthSession"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Figma Auth Sessions"
+        ]
+      }
+    },
+    "/scopes": {
+      "post": {
+        "operationId": "CheckScopesController_handle",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseItem"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/feedback": {
+      "post": {
+        "operationId": "CreateFeedbackController_createFeedback",
+        "summary": "Create new feedback",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFeedbackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Feedback"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Feedback"
+        ]
+      }
+    },
+    "/folders/{folderId}": {
+      "get": {
+        "operationId": "GetFolderController_getFolderByIdEndpoint",
+        "summary": "Return folder",
+        "parameters": [
+          {
+            "name": "folderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RichFolder"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Folders"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateFolderController_updateFolder",
+        "summary": "Update folder",
+        "parameters": [
+          {
+            "name": "folderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchFolderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Folders"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteFolderController_deleteFolder",
+        "summary": "Delete folder but keeps all projects",
+        "parameters": [
+          {
+            "name": "folderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Project Folders"
+        ]
+      }
+    },
+    "/folders": {
+      "get": {
+        "operationId": "GetFoldersController_getFolders",
+        "summary": "Return all folders",
+        "parameters": [
+          {
+            "name": "folderId",
+            "required": false,
+            "in": "query",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "teamId",
+            "required": false,
+            "in": "query",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RichFolder"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Folders"
+        ]
+      },
+      "post": {
+        "operationId": "CreateFolderController_createFolder",
+        "summary": "Create new folder",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFolderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Folders"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/payments/prices": {
+      "get": {
+        "operationId": "GetPricesController_getPricesDeprecated",
+        "summary": "Use GET /prices instead",
+        "deprecated": true,
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPricesResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Prices",
+          "Payments"
+        ]
+      }
+    },
+    "/prices": {
+      "get": {
+        "operationId": "GetPricesController_getPrices",
+        "summary": "Return prices object for user or team",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPricesResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Prices"
+        ]
+      }
+    },
+    "/payments/stripe-customer-portal": {
+      "post": {
+        "operationId": "GetStripeCustomerPortalUrlController_getStripeCustomerPortalDeprecated",
+        "summary": "Return url to manage subscriptions and invoices",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StripeCustomerPortalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StripeCustomerPortalResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Payments"
+        ]
+      }
+    },
+    "/stripe-payment-sessions/{stripePaymentSessionId}": {
+      "get": {
+        "operationId": "GetStripePaymentSessionController_getStripePaymentSession",
+        "summary": "Return stripe payment session object",
+        "parameters": [
+          {
+            "name": "stripePaymentSessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StripePaymentSession"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Stripe Payment Sessions"
+        ]
+      }
+    },
+    "/stripe-payment-sessions/user": {
+      "post": {
+        "operationId": "StartUserPaymentSessionController_startUpgradeUserToProStripePaymentSession",
+        "summary": "",
+        "description": "1. It require some info about user and subscription plan (check request body for more info);\n2. After that we can start stipe payment session which generates unique `.sessionId` and `.paymentUrl`. Wrap it in StripePaymentSession and sends back to user;\n3. Then user can navigate to provided url in **new tab** and start to listen to changes in the main tab (@TODO: add link to docs with websocket);\n4. Once user paid we proceed it through FinishStripePaymentSessionCommand and user receive required events via websocket (@TODO: add docs).",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartStripePaymentSessionForUserRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartStripePaymentSessionPayload"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Stripe Payment Sessions"
+        ]
+      }
+    },
+    "/stripe-payment-sessions/team": {
+      "post": {
+        "operationId": "StartTeamPaymentSessionController_startActivateTeamStripePaymentSession",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartStripePaymentSessionForTeamRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartStripePaymentSessionResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Stripe Payment Sessions"
+        ]
+      }
+    },
+    "/teams/{teamId}/members/{userId}/accept-invite": {
+      "post": {
+        "operationId": "AcceptUserInviteController_acceptUserInvite",
+        "summary": "Accept invite by user",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      }
+    },
+    "/teams": {
+      "post": {
+        "operationId": "CreateTeamController_createTeam",
+        "summary": "Create new team with provided info",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTeamRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamWithMembers"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      }
+    },
+    "/teams/{teamId}": {
+      "delete": {
+        "operationId": "DeleteTeamController_deleteTeam",
+        "summary": "Delete team",
+        "description": "On the first run it make soft delete, so all data keeps and all subscriptions are cancelled.\nOn the second run it will remove team and all linked data.",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateTeamController_setTeam",
+        "summary": "Update all data of the team with one request",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchTeamRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamWithMembers"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      },
+      "get": {
+        "operationId": "GetTeamController_getTeam",
+        "summary": "Returns current team info",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamWithMembers"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      }
+    },
+    "/teams/{teamId}/members": {
+      "post": {
+        "operationId": "InviteUserToTeamController_inviteUserToTeam",
+        "summary": "Add new user to the team",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteTeamMemberRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamMember"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      }
+    },
+    "/teams/{teamId}/members/{userId}": {
+      "delete": {
+        "operationId": "RemoveUserFromTeamController_removeUserFromTeam",
+        "summary": "Remove provided members from the team",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateUserInTeamController_setMemberAdminRole",
+        "summary": "Update member of the team",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchTeamMemberRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      }
+    },
+    "/teams/{teamId}/members/{userId}/restore": {
+      "post": {
+        "operationId": "RestoreUserInTeamController_restoreUserInTeam",
+        "summary": "Restore provided member in the team",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      }
+    },
+    "/teams/{teamId}/send-invite": {
+      "post": {
+        "operationId": "SendInviteController_sendInvite",
+        "summary": "Notify user about invitation",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendInviteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      }
+    },
+    "/teams/{teamId}/avatar": {
+      "put": {
+        "operationId": "SetTeamAvatarController_setTeamAvatar",
+        "summary": "Upload and update team's avatar",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/SetTeamAvatarRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetTeamAvatarResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Teams"
+        ]
+      }
+    },
+    "/projects/{projectId}/versions/{versionId}/patches": {
+      "post": {
+        "operationId": "CreatePatchesController_createPatches",
+        "summary": "Create new patch for project",
+        "parameters": [
+          {
+            "name": "versionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePatchesRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Project Patches"
+        ]
+      }
+    },
+    "/projects/{projectId}/assets/{assetHash}": {
+      "get": {
+        "operationId": "GetProjectAssetController_getAsset",
+        "summary": "Retrieve asset by hash",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "assetHash",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Streamable bytes data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamableFile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Project Assets"
+        ]
+      }
+    },
+    "/projects/{projectId}/assets": {
+      "post": {
+        "operationId": "UploadProjectAssetController_uploadAsset",
+        "summary": "Create new asset for provided project",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadAssetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Project Assets"
+        ]
+      }
+    },
+    "/projects/{projectId}/versions": {
+      "get": {
+        "operationId": "GetVersionsController_getVersions",
+        "summary": "Return list of versions for provided project",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Valid array of versions. There should be at least one available versions otherwise it throws error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectVersionMeta"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Versions"
+        ]
+      },
+      "post": {
+        "operationId": "CreateVersionController_createVersion",
+        "summary": "Create new version from provided project",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectVersionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Project Versions"
+        ]
+      }
+    },
+    "/projects/{projectId}/versions/{versionId}": {
+      "get": {
+        "operationId": "GetVersionsController_getVersion",
+        "summary": "Return specific version of the project",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specific version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectVersionMeta"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Versions"
+        ]
+      }
+    },
+    "/projects/{projectId}/comments": {
+      "get": {
+        "operationId": "GetCommentsController_getComments",
+        "summary": "Returns list of all comments",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Comment"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Comments"
+        ]
+      },
+      "post": {
+        "operationId": "CreateCommentController_createComment",
+        "summary": "Create new comment",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Comments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/projects/{projectId}/comments/{commentId}": {
+      "get": {
+        "operationId": "GetCommentsController_getComment",
+        "summary": "Returns one comment",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Comments"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateCommentController_updateComment",
+        "summary": "Update comment",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchCommentRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Comments"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteCommentController_deleteComment",
+        "summary": "Delete comment",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Project Comments"
+        ]
+      }
+    },
+    "/projects": {
+      "get": {
+        "operationId": "GetProjectsController_listProjects",
+        "summary": "Returns list of all projects for user or team",
+        "parameters": [
+          {
+            "name": "teamId",
+            "required": false,
+            "in": "query",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeActive",
+            "required": false,
+            "in": "query",
+            "description": "When `true` it will return active projects",
+            "schema": {
+              "default": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "includeDeleted",
+            "required": false,
+            "in": "query",
+            "description": "When `true` it will include deleted projects (from trash)",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "folderId",
+            "required": false,
+            "in": "query",
+            "description": "When provided payload would be filtered by folderId. Leave empty to return only root projects",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updatedAfter",
+            "required": false,
+            "in": "query",
+            "description": "Filter projects by specific updatedAt date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "How much projects to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "type": "number"
+            }
+          },
+          {
+            "name": "skip",
+            "required": false,
+            "in": "query",
+            "description": "How much projects to skip. Use in combination with .limit to create pagination for user",
+            "schema": {
+              "default": 0,
+              "type": "number"
+            }
+          },
+          {
+            "required": false,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b",
+            "name": "teamId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "required": false,
+            "description": "When `true` it will return active projects",
+            "name": "includeActive",
+            "in": "query",
+            "schema": {
+              "default": true,
+              "type": "boolean"
+            }
+          },
+          {
+            "required": false,
+            "description": "When `true` it will include deleted projects (from trash)",
+            "name": "includeDeleted",
+            "in": "query",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "required": false,
+            "description": "When provided payload would be filtered by folderId. Leave empty to return only root projects",
+            "name": "folderId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "required": false,
+            "description": "Filter projects by specific updatedAt date",
+            "name": "updatedAfter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "How much projects to return",
+            "required": false,
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25,
+              "type": "number"
+            }
+          },
+          {
+            "description": "How much projects to skip. Use in combination with .limit to create pagination for user",
+            "required": false,
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "default": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectMeta"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects"
+        ]
+      },
+      "post": {
+        "operationId": "CreateProjectController_createProject",
+        "summary": "Create new project",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMeta"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/projects/{projectId}/meta": {
+      "get": {
+        "operationId": "GetProjectMetaController_getProjectMeta",
+        "summary": "Returns project meta",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMeta"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/projects/{projectId}": {
+      "delete": {
+        "operationId": "DeleteProjectController_deleteProject",
+        "summary": "Move project to trash",
+        "parameters": [
+          {
+            "name": "forceDelete",
+            "required": false,
+            "in": "query",
+            "description": "When `true` deletes project skipping trash",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "required": false,
+            "description": "When `true` deletes project skipping trash",
+            "name": "forceDelete",
+            "in": "query",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateProjectController_updateProject",
+        "summary": "Update project",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProjectResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects"
+        ]
+      },
+      "get": {
+        "operationId": "GetProjectController_handle",
+        "summary": "Returns project data",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/projects/{projectId}/restore": {
+      "post": {
+        "operationId": "RestoreProjectController_restoreProject",
+        "summary": "Restore project from trash",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/users/{userId}": {
+      "delete": {
+        "operationId": "DeleteUserController_deleteUser",
+        "summary": "Delete user",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateUserController_setUserPersonalData",
+        "summary": "Update user data",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchUserRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/figma-users/{figmaAccountId}/exchange-id": {
+      "get": {
+        "operationId": "ExchangeFigmaAccountIdController_exchangeFigmaAccountId",
+        "summary": "Exchange user's figmaId with aninixId",
+        "parameters": [
+          {
+            "name": "figmaAccountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserIdResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Figma Users"
+        ]
+      }
+    },
+    "/users/me": {
+      "get": {
+        "operationId": "GetMeController_getMe",
+        "summary": "Return current user info",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWithProjectsCount"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/v2/projects": {
+      "post": {
+        "operationId": "CreateProjectController_process",
+        "summary": "Create new project",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectV2Request"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectMeta"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/patches/diff": {
+      "post": {
+        "operationId": "GetProjectPatchDiffController_handle",
+        "summary": "Returns patch diff according to Aninix File specification",
+        "externalDocs": {
+          "url": "https://github.com/aninix-inc/model#how-data-on-server-should-be-stored"
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectVersionV2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectPatchV2"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/patches/limit": {
+      "post": {
+        "operationId": "GetProjectPatchLimitController_handle",
+        "summary": "Returns limit patch according to Aninix File specification",
+        "externalDocs": {
+          "url": "https://github.com/aninix-inc/model#how-data-on-server-should-be-stored"
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectVersionV2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectPatchV2"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/versions/latest": {
+      "get": {
+        "operationId": "GetProjectLatestVersionController_handle",
+        "summary": "Returns latest project version according to Aninix File specification. It used to sync client's project with the server",
+        "externalDocs": {
+          "url": "https://github.com/aninix-inc/model#how-data-on-server-should-be-stored"
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectVersionV2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectVersionV2"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/patch": {
+      "patch": {
+        "operationId": "PatchProjectController_handle",
+        "summary": "Patch project according to Aninix File specification",
+        "externalDocs": {
+          "url": "https://github.com/aninix-inc/model#how-data-on-server-should-be-stored"
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPatchV2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/covers": {
+      "post": {
+        "operationId": "UploadProjectCoverController_uploadAsset",
+        "summary": "Create new asset for provided project",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadCoverRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/covers/static": {
+      "get": {
+        "operationId": "GetProjectCoverController_getAsset",
+        "summary": "Retrieve asset by hash",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Streamable bytes data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamableFile"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Projects"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/versions": {
+      "get": {
+        "operationId": "GetProjectVersionsMetaController_getVersions",
+        "summary": "Return list of versions meta for provided project. Later you can use GET /v2/projects/:projectId/versions/:versionId to retrieve specific version data",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectVersionMetaV2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      },
+      "post": {
+        "operationId": "CreateProjectVersionController_handle",
+        "summary": "Create latest project version.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectVersionV2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/versions/{versionId}": {
+      "get": {
+        "operationId": "GetProjectVersionController_getVersions",
+        "summary": "Return version for the provided id. Use it to retrieve project patch.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectVersionV2"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/tests": {
+      "get": {
+        "operationId": "SubscriberToProjectOpertionsController_getHtml",
+        "summary": "Returns small html to local tests",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      },
+      "post": {
+        "operationId": "SubscriberToProjectOpertionsController_sendEvent",
+        "summary": "Publish test event to pubsub",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      }
+    },
+    "/v2/projects/{projectId}/events": {
+      "get": {
+        "operationId": "SubscriberToProjectOpertionsController_subscribe",
+        "summary": "Not GET but SSE to listen all events",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Projects V2"
+        ]
+      }
+    },
+    "/lotties/{id}": {
+      "get": {
+        "operationId": "GetLottieController_getLottie",
+        "summary": "Return lottie meta by provided id",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LottieMeta"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lotties"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateLottieController_updateLottie",
+        "summary": "Update lottie file",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLottieRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LottieMeta"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lotties"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteLottieController_deleteLottie",
+        "summary": "Delete lottie file",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LottieMeta"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lotties"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/lotties/{id}/data": {
+      "get": {
+        "operationId": "GetLottieDataController_getLottieData",
+        "summary": "Return lottie binary data",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "type": "Buffer",
+                    "data": [
+                      91,
+                      63,
+                      50,
+                      1,
+                      64
+                    ]
+                  },
+                  "description": "It can be parsed to actual ArrayBuffer like this: `Uint8Array.from(response.data)`"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Lotties"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/lotties": {
+      "get": {
+        "operationId": "GetLottiesController_getLotties",
+        "summary": "Return all metadata for all lotties for the user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LottieMeta"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Lotties"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "CreateLottieController_createLottie",
+        "summary": "Upload lottie file",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLottieRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LottieMeta"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Lotties"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/auth/anonymous-tokens": {
+      "post": {
+        "operationId": "CreateTokenController_getAnonymousToken",
+        "summary": "Use POST /tokens instead",
+        "deprecated": true,
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnonymousToken"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Tokens",
+          "Auth"
+        ]
+      }
+    },
+    "/tokens": {
+      "post": {
+        "operationId": "CreateTokenController_createToken",
+        "summary": "Create new token",
+        "description": "By default it has only public access. Once user authenticated he got all required accesses",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnonymousToken"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Tokens"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "DeleteTokenController_logout",
+        "summary": "Use DELETE /tokens instead",
+        "deprecated": true,
+        "parameters": [],
+        "responses": {
+          "202": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Tokens",
+          "Auth"
+        ]
+      }
+    },
+    "/tokens/{tokenId}": {
+      "delete": {
+        "operationId": "DeleteTokenController_deleteToken",
+        "summary": "Delete provided token id",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
+          },
+          "401": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Tokens"
+        ]
+      }
+    },
+    "/events/test": {
+      "get": {
+        "operationId": "EventsController_getHtml",
+        "summary": "Returns small html to local tests",
+        "deprecated": true,
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/events/{id}": {
+      "post": {
+        "operationId": "EventsController_sendEvent",
+        "summary": "Publish test event to pubsub",
+        "deprecated": true,
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/events": {
+      "get": {
+        "operationId": "EventsController_subscribe",
+        "summary": "Use SSE /v2/projects/:projectId/events instead",
+        "deprecated": true,
+        "parameters": [
+          {
+            "name": "projectIds",
+            "required": true,
+            "in": "query",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "description": "UUID",
+            "required": true,
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b",
+            "name": "projectIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/webhooks/figma-auth-session": {
+      "get": {
+        "operationId": "WebhooksFigmaAuthSessionController_handleFigmaAuthWebhook",
+        "summary": "Handle webhook from Figma",
+        "parameters": [
+          {
+            "name": "code",
+            "required": true,
+            "in": "query",
+            "description": "Unique code generated by figma. Required to use to retrieve user tokens",
+            "example": "stvspg1iXhUWCVYd3pJLyFTde",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "required": true,
+            "in": "query",
+            "description": "Figma call custom variable as state. We use it as `figmaAuthSession.id`",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "307": {
+            "description": "Redirect user to required url after processing of Figma's webhooks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "example": "https://app.aninix.com/auth?status=success"
+                    },
+                    {
+                      "type": "string",
+                      "example": "https://app.aninix.com/auth?status=error"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    },
+    "/webhooks/stripe": {
+      "post": {
+        "operationId": "WebhooksStripeController_finishStripePaymentSession",
+        "summary": "Handle webhooks from stripe and do some commands. For example it can issue `FinishStripePaymentSessionCommand` or `CancelSubscription`",
+        "externalDocs": {
+          "description": "Check more info directly in stripe docs",
+          "url": "https://stripe.com/docs/billing/subscriptions/build-subscriptions?ui=checkout"
+        },
+        "parameters": [
+          {
+            "name": "stripe-signature",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Webhooks"
+        ]
+      }
+    },
+    "/renders/player/examples/{projectId}": {
+      "get": {
+        "operationId": "GetPlayerController_processExample",
+        "summary": "[Internal] Open this url in the browser for testing. Works only in dev environment.",
+        "parameters": [
+          {
+            "name": "projectId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Renders"
+        ]
+      }
+    },
+    "/renders/player": {
+      "post": {
+        "operationId": "GetPlayerController_process",
+        "summary": "Make a request with project id and optional snapshot to override",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPlayerPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns html for the player to inject into an iframe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Renders"
+        ]
+      }
+    },
+    "/renders/player/v2": {
+      "post": {
+        "operationId": "GetPlayerController_processLegacyV2",
+        "summary": "Make a request with project id and optional snapshot to override",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetPlayerPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns html for the player to inject into an iframe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Renders"
+        ]
+      }
+    },
+    "/render-jobs": {
+      "post": {
+        "operationId": "CreateRenderJobController_process",
+        "summary": "Create render job",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRenderJobResource"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/QueuedRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProcessingRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CompletedRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelledRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FailedRenderJob"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Render API"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/render-jobs/{jobId}": {
+      "get": {
+        "operationId": "GetRenderJobController_process",
+        "summary": "Return full render job",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/QueuedRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProcessingRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CompletedRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelledRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FailedRenderJob"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Render API"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateRenderJobController_process",
+        "summary": "Update render job",
+        "description": "Only available for admins. On your side this would happen automatically when rendering status changes",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/RenderJobQueued"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RenderJobProcessing"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RenderJobCompleted"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RenderJobCancelled"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RenderJobFailed"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/QueuedRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProcessingRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CompletedRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelledRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FailedRenderJob"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Render API"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/render-jobs/{jobId}/events": {
+      "get": {
+        "operationId": "ListenRenderJobEventsController_subscribe",
+        "summary": "SSE: send events when anything in the render job changed",
+        "description": "When connected it will ALWAYS send `RenderJobInitiatedEvent` with current status of the job.\nYou can use it to sync your UI.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/RenderJobInitiatedEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RenderJobQueuedEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RenderJobProcessStartedEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RenderJobCompletedEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RenderJobCancelledEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RenderJobFailedEvent"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Render API"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/test/render-jobs": {
+      "post": {
+        "operationId": "CreateTestRenderJobController_process",
+        "summary": "Create render job",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRenderJobResource"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/QueuedRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ProcessingRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CompletedRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CancelledRenderJob"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FailedRenderJob"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": ""
+          },
+          "404": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Render API"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/test/render-jobs/{jobId}/events": {
+      "get": {
+        "operationId": "ListenTestRenderJobEventsController_getHtml",
+        "summary": "Returns small html to local tests",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Render API"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Core",
+    "description": "",
+    "version": "v1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "SystemStatus": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "isActive",
+          "message",
+          "type",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "TrackEventRequest": {
+        "type": "object",
+        "properties": {
+          "eventName": {
+            "type": "string",
+            "description": "Unique event name"
+          },
+          "properties": {
+            "type": "object",
+            "description": "Any properties required to show in mixpanel",
+            "example": {
+              "propertyExample": "some text here"
+            }
+          }
+        },
+        "required": [
+          "eventName"
+        ]
+      },
+      "StreamableFile": {
+        "type": "object",
+        "properties": {}
+      },
+      "FileSystemStoredFile": {
+        "type": "object",
+        "properties": {}
+      },
+      "UploadAssetRequestV2": {
+        "type": "object",
+        "properties": {
+          "hash": {
+            "type": "string",
+            "description": "Hash of the file"
+          },
+          "file": {
+            "description": "Binary file from html form",
+            "externalDocs": {
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/File"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FileSystemStoredFile"
+              }
+            ]
+          }
+        },
+        "required": [
+          "hash",
+          "file"
+        ]
+      },
+      "FigmaAuthSessionNotCreated": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateFigmaAuthSessionRequest": {
+        "type": "object",
+        "properties": {
+          "redirectUrlOnSuccess": {
+            "type": "string",
+            "description": "Url to redirect when user successfully authenticated using Figma. It should be related url for the web app. Example: `/auth?status=success`"
+          },
+          "redirectUrlOnError": {
+            "type": "string",
+            "description": "Url to redirect when user authentication using Figma failed. It should be related url for the web app. Example: `/auth?status=error`"
+          }
+        }
+      },
+      "StartFigmaAuthSessionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "authUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "authUrl"
+        ]
+      },
+      "FigmaAuthSession": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Linked .userId. Currently only users can be authenticated",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "success",
+              "failure"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "Request": {
+        "type": "object",
+        "properties": {
+          "resource": {
+            "type": "string",
+            "enum": [
+              "team",
+              "user",
+              "project"
+            ]
+          },
+          "resourceId": {
+            "type": "string",
+            "description": "Entity Id"
+          },
+          "tokens": {
+            "type": "string",
+            "description": "String with tokens separated by comma to compare with provided resource",
+            "example": "123,456"
+          }
+        },
+        "required": [
+          "resource",
+          "resourceId",
+          "tokens"
+        ]
+      },
+      "ResponseItem": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "none",
+                "any",
+                "aninix:admin",
+                "user:read",
+                "user:write",
+                "team:administration",
+                "team-members:management",
+                "team:write",
+                "team:read"
+              ]
+            }
+          }
+        },
+        "required": [
+          "token",
+          "scopes"
+        ]
+      },
+      "CreateFeedbackRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Markdown content"
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "Feedback": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "Folder": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "userId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "createdAt"
+        ]
+      },
+      "LastEdit": {
+        "type": "object",
+        "properties": {
+          "avatarUrl": {
+            "type": "string",
+            "description": "Url to specific file",
+            "example": "https://firebasestorage.googleapis.com/v0/b/aninix-dev.appspot.com/o/projects%2Fkxugm5r4bbmfebnd51j%2Fproject.json?alt=media&token=3e701daf-f777-4842-8fd8-2c67cd5036e4"
+          },
+          "name": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "name",
+          "date"
+        ]
+      },
+      "ProjectMeta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string"
+          },
+          "accessByLink": {
+            "type": "string",
+            "enum": [
+              "anyone",
+              "team_only",
+              "example"
+            ]
+          },
+          "schemaVersion": {
+            "type": "number",
+            "description": "Current project schema version"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "teamId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "lastEdit": {
+            "$ref": "#/components/schemas/LastEdit"
+          },
+          "totalCommentsCount": {
+            "type": "number"
+          },
+          "figmaUrl": {
+            "type": "string",
+            "description": "Url to specific file",
+            "example": "https://firebasestorage.googleapis.com/v0/b/aninix-dev.appspot.com/o/projects%2Fkxugm5r4bbmfebnd51j%2Fproject.json?alt=media&token=3e701daf-f777-4842-8fd8-2c67cd5036e4"
+          },
+          "folder": {
+            "type": "object"
+          },
+          "ownerIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "editorIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "accessByLink",
+          "schemaVersion",
+          "createdAt",
+          "totalCommentsCount",
+          "ownerIds",
+          "editorIds"
+        ]
+      },
+      "RichFolder": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "userId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "breadcrumbs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Folder"
+            }
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectMeta"
+            }
+          },
+          "parentFolder": {
+            "$ref": "#/components/schemas/Folder"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "createdAt",
+          "breadcrumbs",
+          "projects"
+        ]
+      },
+      "CreateFolderRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "parentFolderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "PatchFolderRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "parentFolderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          }
+        }
+      },
+      "Price": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Price with decimal numbers",
+            "example": 19.99
+          },
+          "period": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "annual"
+            ]
+          }
+        },
+        "required": [
+          "amount",
+          "period"
+        ]
+      },
+      "GetPricesResponse": {
+        "type": "object",
+        "properties": {
+          "monthly": {
+            "$ref": "#/components/schemas/Price"
+          },
+          "annual": {
+            "$ref": "#/components/schemas/Price"
+          }
+        },
+        "required": [
+          "monthly",
+          "annual"
+        ]
+      },
+      "StripeCustomerPortalRequest": {
+        "type": "object",
+        "properties": {
+          "teamId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "redirectUrlOnSuccess": {
+            "type": "string"
+          }
+        }
+      },
+      "StripeCustomerPortalResponse": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Url to specific file",
+            "example": "https://firebasestorage.googleapis.com/v0/b/aninix-dev.appspot.com/o/projects%2Fkxugm5r4bbmfebnd51j%2Fproject.json?alt=media&token=3e701daf-f777-4842-8fd8-2c67cd5036e4"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
+      "StripePaymentSession": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "success",
+              "failure"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "status"
+        ]
+      },
+      "StartStripePaymentSessionForUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "subscriptionPlan": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "annual"
+            ]
+          },
+          "redirectUrlOnSuccess": {
+            "type": "string"
+          },
+          "redirectUrlOnError": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "subscriptionPlan"
+        ]
+      },
+      "StartStripePaymentSessionPayload": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Payment session id"
+          },
+          "paymentUrl": {
+            "type": "string",
+            "description": "Payment session id"
+          }
+        },
+        "required": [
+          "id",
+          "paymentUrl"
+        ]
+      },
+      "StartStripePaymentSessionForTeamRequest": {
+        "type": "object",
+        "properties": {
+          "subscriptionPlan": {
+            "type": "string",
+            "enum": [
+              "monthly",
+              "annual"
+            ]
+          },
+          "teamId": {
+            "type": "string"
+          },
+          "redirectUrlOnSuccess": {
+            "type": "string"
+          },
+          "redirectUrlOnError": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "subscriptionPlan",
+          "teamId"
+        ]
+      },
+      "StartStripePaymentSessionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Payment session id"
+          },
+          "paymentUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "paymentUrl"
+        ]
+      },
+      "CreateTeamRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the team",
+            "example": "Aninix"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Domain of the team, it can be used to auto-invite people with @domain emails",
+            "example": "aninix.com"
+          }
+        },
+        "required": [
+          "name",
+          "domain"
+        ]
+      },
+      "TeamUser": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "invite_pending",
+              "active",
+              "suspended"
+            ]
+          },
+          "adminRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "manager",
+              "owner"
+            ]
+          },
+          "aninixRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "editor"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name. Example: \"Tony Pinkevych\""
+          },
+          "email": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          },
+          "figmaAccountId": {
+            "type": "string",
+            "description": "User id from Figma. Example: \"1000008924155814778\""
+          },
+          "stripeCustomerId": {
+            "type": "string",
+            "description": "Customer id from Stripe. Example: \"cus_Muvn39XKgm27PD\""
+          }
+        },
+        "required": [
+          "status",
+          "adminRole",
+          "aninixRole",
+          "createdAt",
+          "id"
+        ]
+      },
+      "TeamWithMembers": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Team's unique id. Example: \"00000000-0000-0000-0000-000000000000\"",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string",
+            "description": "Teams's name. Example: \"Aninix\""
+          },
+          "domain": {
+            "type": "string",
+            "description": "Team's domain. Example: \"aninix.com\""
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "free",
+              "pro"
+            ],
+            "description": "Determine if team is active or not"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "description": "Team logo URL",
+            "example": "https://firebasestorage.googleapis.com/v0/b/aninix-dev.appspot.com/o/projects%2Fkxugm5r4bbmfebnd51j%2Fproject.json?alt=media&token=3e701daf-f777-4842-8fd8-2c67cd5036e4"
+          },
+          "brandColor": {
+            "type": "string",
+            "description": "Brand color grabbed from provided logo",
+            "example": "#374FD5"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TeamUser"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "domain",
+          "plan",
+          "avatarUrl",
+          "brandColor",
+          "createdAt",
+          "users"
+        ]
+      },
+      "InviteTeamMemberRequest": {
+        "type": "object",
+        "properties": {
+          "userEmail": {
+            "type": "string",
+            "description": "Email",
+            "example": "sample@aninix.com"
+          },
+          "adminRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "manager",
+              "owner"
+            ]
+          },
+          "aninixRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "editor"
+            ]
+          }
+        },
+        "required": [
+          "userEmail",
+          "adminRole",
+          "aninixRole"
+        ]
+      },
+      "TeamMember": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "invite_pending",
+              "active",
+              "suspended"
+            ]
+          },
+          "adminRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "manager",
+              "owner"
+            ]
+          },
+          "aninixRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "editor"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "userId",
+          "teamId",
+          "status",
+          "adminRole",
+          "aninixRole",
+          "createdAt",
+          "updatedAt",
+          "deletedAt"
+        ]
+      },
+      "SendInviteRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          }
+        },
+        "required": [
+          "userId"
+        ]
+      },
+      "SetTeamAvatarRequest": {
+        "type": "object",
+        "properties": {
+          "avatar": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "required": [
+          "avatar"
+        ]
+      },
+      "SetTeamAvatarResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "PatchTeamRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the team",
+            "example": "Aninix"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Domain of the team, it can be used to auto-invite people with @domain emails",
+            "example": "aninix.com"
+          }
+        }
+      },
+      "PatchTeamMemberRequest": {
+        "type": "object",
+        "properties": {
+          "adminRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "manager",
+              "owner"
+            ]
+          },
+          "aninixRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "editor"
+            ]
+          }
+        }
+      },
+      "CreatePatchesRequestDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UploadAssetRequest": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "hash": {
+            "type": "string",
+            "description": "Hash of the file"
+          },
+          "file": {
+            "description": "Binary file from html form",
+            "externalDocs": {
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/File"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FileSystemStoredFile"
+              }
+            ]
+          }
+        },
+        "required": [
+          "projectId",
+          "hash",
+          "file"
+        ]
+      },
+      "ProjectVersionMeta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string",
+            "description": "Version name. By default it take index and create 000000 patter from it"
+          },
+          "projectId": {
+            "type": "string",
+            "description": "Connected project id",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date when version was created",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "createdAt"
+        ]
+      },
+      "CreateProjectVersionRequestDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "Actual data of the project. You can call project.create with this",
+            "example": {}
+          },
+          "emitEvent": {
+            "type": "boolean",
+            "description": "When `true` emitting `new_snapshot` event for all subscribers",
+            "default": true
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "Rectangle": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height"
+        ]
+      },
+      "Author": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "isAnonymous": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "isAnonymous"
+        ]
+      },
+      "Reply": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "rectangle": {
+            "$ref": "#/components/schemas/Rectangle"
+          },
+          "time": {
+            "type": "number"
+          },
+          "isResolved": {
+            "type": "boolean"
+          },
+          "author": {
+            "$ref": "#/components/schemas/Author"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "commentEditedAt": {
+            "type": "string",
+            "description": "Set when user updated comment's content",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "comment",
+          "rectangle",
+          "time",
+          "isResolved",
+          "author",
+          "createdAt"
+        ]
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "rectangle": {
+            "$ref": "#/components/schemas/Rectangle"
+          },
+          "time": {
+            "type": "number"
+          },
+          "isResolved": {
+            "type": "boolean"
+          },
+          "author": {
+            "$ref": "#/components/schemas/Author"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "commentEditedAt": {
+            "type": "string",
+            "description": "Set when user updated comment's content",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "replies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Reply"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "comment",
+          "rectangle",
+          "time",
+          "isResolved",
+          "author",
+          "createdAt"
+        ]
+      },
+      "CreateCommentRequest": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string"
+          },
+          "time": {
+            "type": "number"
+          },
+          "rectangle": {
+            "$ref": "#/components/schemas/Rectangle"
+          },
+          "parentCommentId": {
+            "type": "string",
+            "description": "Parent comment ID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          }
+        },
+        "required": [
+          "comment",
+          "time",
+          "rectangle"
+        ]
+      },
+      "PatchCommentRequestDto": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string"
+          },
+          "time": {
+            "type": "number"
+          },
+          "rectangle": {
+            "$ref": "#/components/schemas/Rectangle"
+          },
+          "isResolved": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "data": {
+            "type": "object",
+            "description": "Project data in JSON format"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "data"
+        ]
+      },
+      "UpdateProjectResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "accessByLink": {
+            "type": "string",
+            "enum": [
+              "anyone",
+              "team_only",
+              "example"
+            ]
+          },
+          "schemaVersion": {
+            "type": "number",
+            "description": "Current project schema version"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "teamId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "lastEdit": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LastEdit"
+              }
+            ]
+          },
+          "totalCommentsCount": {
+            "type": "number",
+            "readOnly": true
+          },
+          "figmaUrl": {
+            "type": "string",
+            "description": "Url to specific file",
+            "example": "https://firebasestorage.googleapis.com/v0/b/aninix-dev.appspot.com/o/projects%2Fkxugm5r4bbmfebnd51j%2Fproject.json?alt=media&token=3e701daf-f777-4842-8fd8-2c67cd5036e4"
+          },
+          "folder": {
+            "type": "object"
+          },
+          "ownerIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "editorIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "folderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "Map": {
+        "type": "object",
+        "properties": {}
+      },
+      "ProjectPatch": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "data": {
+            "type": "object"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "data",
+          "createdAt"
+        ]
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string"
+          },
+          "accessByLink": {
+            "type": "string",
+            "enum": [
+              "anyone",
+              "team_only",
+              "example"
+            ]
+          },
+          "schemaVersion": {
+            "type": "number",
+            "description": "Current project schema version"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "teamId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true,
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "lastEdit": {
+            "$ref": "#/components/schemas/LastEdit"
+          },
+          "totalCommentsCount": {
+            "type": "number"
+          },
+          "figmaUrl": {
+            "type": "string",
+            "description": "Url to specific file",
+            "example": "https://firebasestorage.googleapis.com/v0/b/aninix-dev.appspot.com/o/projects%2Fkxugm5r4bbmfebnd51j%2Fproject.json?alt=media&token=3e701daf-f777-4842-8fd8-2c67cd5036e4"
+          },
+          "folder": {
+            "type": "object"
+          },
+          "ownerIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "editorIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "snapshotId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Map"
+          },
+          "patches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectPatch"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "accessByLink",
+          "schemaVersion",
+          "createdAt",
+          "totalCommentsCount",
+          "ownerIds",
+          "editorIds",
+          "snapshotId",
+          "data",
+          "patches"
+        ]
+      },
+      "UserIdResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "TeamWithUserRole": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Team's unique id. Example: \"00000000-0000-0000-0000-000000000000\"",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string",
+            "description": "Teams's name. Example: \"Aninix\""
+          },
+          "domain": {
+            "type": "string",
+            "description": "Team's domain. Example: \"aninix.com\""
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "free",
+              "pro"
+            ],
+            "description": "Determine if team is active or not"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "description": "Team logo URL",
+            "example": "https://firebasestorage.googleapis.com/v0/b/aninix-dev.appspot.com/o/projects%2Fkxugm5r4bbmfebnd51j%2Fproject.json?alt=media&token=3e701daf-f777-4842-8fd8-2c67cd5036e4"
+          },
+          "brandColor": {
+            "type": "string",
+            "description": "Brand color grabbed from provided logo",
+            "example": "#374FD5"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "adminRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "manager",
+              "owner"
+            ]
+          },
+          "aninixRole": {
+            "type": "string",
+            "enum": [
+              "viewer",
+              "editor"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "domain",
+          "plan",
+          "avatarUrl",
+          "brandColor",
+          "createdAt",
+          "adminRole",
+          "aninixRole"
+        ]
+      },
+      "UserWithProjectsCount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name. Example: \"Tony Pinkevych\""
+          },
+          "email": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          },
+          "plan": {
+            "type": "string",
+            "enum": [
+              "free",
+              "pro"
+            ],
+            "description": "User's status"
+          },
+          "figmaAccountId": {
+            "type": "string",
+            "description": "User id from Figma. Example: \"1000008924155814778\""
+          },
+          "stripeCustomerId": {
+            "type": "string",
+            "description": "Customer id from Stripe. Example: \"cus_Muvn39XKgm27PD\""
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "teams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TeamWithUserRole"
+            }
+          },
+          "publishedProjects": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "plan",
+          "createdAt",
+          "teams",
+          "publishedProjects"
+        ]
+      },
+      "PatchUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email",
+            "example": "sample@aninix.com"
+          },
+          "avatarFileId": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateProjectV2Request": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "ProjectVersionV2": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "clock": {
+            "type": "number"
+          },
+          "entities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "clock",
+          "entities"
+        ]
+      },
+      "ProjectPatchV2": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectOps": {
+            "type": "array",
+            "items": {
+              "type": "array"
+            }
+          },
+          "entitiesOps": {
+            "type": "array",
+            "items": {
+              "type": "array"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "projectOps",
+          "entitiesOps"
+        ]
+      },
+      "UploadCoverRequest": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "description": "Binary file from html form",
+            "externalDocs": {
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/File"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FileSystemStoredFile"
+              }
+            ]
+          }
+        },
+        "required": [
+          "file"
+        ]
+      },
+      "ProjectVersionMetaV2": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "name": {
+            "type": "string",
+            "description": "Version name. By default it take index and create 000000 pattern from it"
+          },
+          "projectId": {
+            "type": "string",
+            "description": "Connected project id",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date when version was created",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "projectId",
+          "createdAt"
+        ]
+      },
+      "LottieMeta": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "userId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "expiredAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "createdAt"
+        ]
+      },
+      "CreateLottieRequest": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "description": "Binary file from html form",
+            "externalDocs": {
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/File"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FileSystemStoredFile"
+              }
+            ]
+          },
+          "expiredAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      },
+      "UpdateLottieRequest": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "description": "Binary file from html form",
+            "externalDocs": {
+              "url": "https://developer.mozilla.org/en-US/docs/Web/API/File"
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FileSystemStoredFile"
+              }
+            ]
+          },
+          "expiredAt": {
+            "type": "string",
+            "description": "Date in ISO format",
+            "example": "2023-09-15T22:00:00.000Z"
+          }
+        }
+      },
+      "AnonymousToken": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "UUID",
+            "example": "a1292440-9ae7-4042-98dd-55ce95fbbb9b"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId",
+          "token"
+        ]
+      },
+      "ProjectPreviewPayload": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Project ID to use as a base"
+          },
+          "snapshot": {
+            "type": "object",
+            "description": "Snapshot to be applied on top of the project"
+          }
+        },
+        "required": [
+          "projectId"
+        ]
+      },
+      "GetPlayerPayload": {
+        "type": "object",
+        "properties": {
+          "projectPreviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectPreviewPayload"
+            }
+          }
+        },
+        "required": [
+          "projectPreviews"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {}
+      },
+      "Mp4RenderOptions": {
+        "type": "object",
+        "properties": {
+          "audio": {
+            "type": "string",
+            "description": "Audio file name to be get. Should include extension"
+          },
+          "audioBitrate": {
+            "type": "number",
+            "description": "Audio bitrate in kbps",
+            "default": 192,
+            "example": 192
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "mp4"
+            ]
+          },
+          "videoBitrate": {
+            "type": "number",
+            "description": "Video bitrate in kbps",
+            "default": 4000,
+            "example": 4000
+          },
+          "fps": {
+            "type": "number",
+            "description": "Framerate",
+            "default": 60,
+            "example": 60
+          }
+        },
+        "required": [
+          "format"
+        ]
+      },
+      "WebmRenderOptions": {
+        "type": "object",
+        "properties": {
+          "audio": {
+            "type": "string",
+            "description": "Audio file name to be get. Should include extension"
+          },
+          "audioBitrate": {
+            "type": "number",
+            "description": "Audio bitrate in kbps",
+            "default": 192,
+            "example": 192
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "webm"
+            ]
+          },
+          "videoBitrate": {
+            "type": "number",
+            "description": "Video bitrate in kbps",
+            "default": 4000,
+            "example": 4000
+          },
+          "fps": {
+            "type": "number",
+            "description": "Framerate",
+            "default": 60,
+            "example": 60
+          }
+        },
+        "required": [
+          "format"
+        ]
+      },
+      "GifRenderOptions": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "gif"
+            ]
+          },
+          "fps": {
+            "type": "number",
+            "description": "Default is 60 but max for gifs are 50 so it would be caped by 50.",
+            "default": 60
+          }
+        },
+        "required": [
+          "format",
+          "fps"
+        ]
+      },
+      "CreateRenderProject": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "description": "Project ID to be used as base"
+          },
+          "variation": {
+            "type": "object"
+          },
+          "scaleFactor": {
+            "type": "number",
+            "description": "Scale factor to resize final video.",
+            "default": 1,
+            "examples": [
+              0.5,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "startInSeconds": {
+            "type": "number",
+            "description": "Allows cut the left part of the project."
+          },
+          "endInSeconds": {
+            "type": "number",
+            "description": "Allows cut the right part of the project."
+          }
+        },
+        "required": [
+          "projectId",
+          "variation"
+        ]
+      },
+      "CreateStoryboard": {
+        "type": "object",
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateRenderProject"
+            }
+          },
+          "renderOptions": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Mp4RenderOptions"
+              },
+              {
+                "$ref": "#/components/schemas/WebmRenderOptions"
+              },
+              {
+                "$ref": "#/components/schemas/GifRenderOptions"
+              }
+            ],
+            "description": "Includes parameters for the final video. For example, format type, frames per second, bitrate or quality. Check the RenderOptions object for details."
+          }
+        },
+        "required": [
+          "projects",
+          "renderOptions"
+        ]
+      },
+      "CreateRenderJobResource": {
+        "type": "object",
+        "properties": {
+          "storyboard": {
+            "$ref": "#/components/schemas/CreateStoryboard"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Any additional JSON data that should be attached to the job. It may be useful to add a specific client ID."
+          }
+        },
+        "required": [
+          "storyboard"
+        ]
+      },
+      "RenderProject": {
+        "type": "object",
+        "properties": {
+          "snapshot": {
+            "type": "string",
+            "description": "Path to json file of the snapshot to be rendered. Should include extension"
+          },
+          "scaleFactor": {
+            "type": "number",
+            "description": "Scale factor to resize final video.",
+            "default": 1,
+            "examples": [
+              0.5,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "startInSeconds": {
+            "type": "number",
+            "description": "Allows cut the left part of the project."
+          },
+          "endInSeconds": {
+            "type": "number",
+            "description": "Allows cut the right part of the project."
+          }
+        },
+        "required": [
+          "snapshot"
+        ]
+      },
+      "Storyboard": {
+        "type": "object",
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RenderProject"
+            }
+          },
+          "renderOptions": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Mp4RenderOptions"
+              },
+              {
+                "$ref": "#/components/schemas/WebmRenderOptions"
+              },
+              {
+                "$ref": "#/components/schemas/GifRenderOptions"
+              }
+            ],
+            "description": "Includes parameters for the final video. For example, format type, frames per second, bitrate or quality. Check the RenderOptions object for details."
+          }
+        },
+        "required": [
+          "projects",
+          "renderOptions"
+        ]
+      },
+      "QueuedRenderJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "renderJob"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "hash": {
+            "type": "string",
+            "description": "Hash of storyboard project IDs and audio name. This allows to get a render jobs for selected frames in the UI."
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "Id of the user or team who created the job. For user it would have prefix `user-` and for team `team-`. For example `user-8715b5d1-0e57-48d8-b826-ba728f0ac0c8`."
+          },
+          "storyboard": {
+            "description": "Storyboard object to be converted into a media",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Storyboard"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date the job was created.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date the job was updated.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Any additional JSON data that should be attached to the job. It may be useful to add a specific client ID."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "hash",
+          "ownerId",
+          "storyboard",
+          "createdAt",
+          "status"
+        ]
+      },
+      "ProcessingRenderJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "renderJob"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "hash": {
+            "type": "string",
+            "description": "Hash of storyboard project IDs and audio name. This allows to get a render jobs for selected frames in the UI."
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "Id of the user or team who created the job. For user it would have prefix `user-` and for team `team-`. For example `user-8715b5d1-0e57-48d8-b826-ba728f0ac0c8`."
+          },
+          "storyboard": {
+            "description": "Storyboard object to be converted into a media",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Storyboard"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date the job was created.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date the job was updated.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Any additional JSON data that should be attached to the job. It may be useful to add a specific client ID."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "processing"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "hash",
+          "ownerId",
+          "storyboard",
+          "createdAt",
+          "status"
+        ]
+      },
+      "CompletedRenderJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "renderJob"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "hash": {
+            "type": "string",
+            "description": "Hash of storyboard project IDs and audio name. This allows to get a render jobs for selected frames in the UI."
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "Id of the user or team who created the job. For user it would have prefix `user-` and for team `team-`. For example `user-8715b5d1-0e57-48d8-b826-ba728f0ac0c8`."
+          },
+          "storyboard": {
+            "description": "Storyboard object to be converted into a media",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Storyboard"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date the job was created.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date the job was updated.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Any additional JSON data that should be attached to the job. It may be useful to add a specific client ID."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed"
+            ]
+          },
+          "fileUrl": {
+            "type": "string",
+            "description": "Used to load a rendered file. Streaming is supported. File URL is available for 7 days. If you need to refresh it you have to send GET request to the `RenderJob` endpount (TBD)."
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "hash",
+          "ownerId",
+          "storyboard",
+          "createdAt",
+          "status",
+          "fileUrl"
+        ]
+      },
+      "CancelledRenderJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "renderJob"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "hash": {
+            "type": "string",
+            "description": "Hash of storyboard project IDs and audio name. This allows to get a render jobs for selected frames in the UI."
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "Id of the user or team who created the job. For user it would have prefix `user-` and for team `team-`. For example `user-8715b5d1-0e57-48d8-b826-ba728f0ac0c8`."
+          },
+          "storyboard": {
+            "description": "Storyboard object to be converted into a media",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Storyboard"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date the job was created.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date the job was updated.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Any additional JSON data that should be attached to the job. It may be useful to add a specific client ID."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "cancelled"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "hash",
+          "ownerId",
+          "storyboard",
+          "createdAt",
+          "status"
+        ]
+      },
+      "FailedRenderJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "renderJob"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "hash": {
+            "type": "string",
+            "description": "Hash of storyboard project IDs and audio name. This allows to get a render jobs for selected frames in the UI."
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "Id of the user or team who created the job. For user it would have prefix `user-` and for team `team-`. For example `user-8715b5d1-0e57-48d8-b826-ba728f0ac0c8`."
+          },
+          "storyboard": {
+            "description": "Storyboard object to be converted into a media",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Storyboard"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date the job was created.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date the job was updated.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Any additional JSON data that should be attached to the job. It may be useful to add a specific client ID."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "failed"
+            ],
+            "description": "Before moving to this status Aninix will try to rerender video up to 3 times with exponential backoff. Only after all 3 failed attempts RenderJob would be marked as `failed`."
+          },
+          "failReason": {
+            "type": "string"
+          },
+          "failMessage": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "hash",
+          "ownerId",
+          "storyboard",
+          "createdAt",
+          "status",
+          "failReason",
+          "failMessage"
+        ]
+      },
+      "RenderJobQueued": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "RenderJobProcessing": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "processing"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "RenderJobCompleted": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed"
+            ]
+          },
+          "filePath": {
+            "type": "string",
+            "description": "File path in the storage. Should include extension"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "RenderJobCancelled": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "cancelled"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "RenderJobFailed": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "failed"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "description": "Code of the failure"
+          }
+        },
+        "required": [
+          "status",
+          "code"
+        ]
+      },
+      "BaseRenderJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "renderJob"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "hash": {
+            "type": "string",
+            "description": "Hash of storyboard project IDs and audio name. This allows to get a render jobs for selected frames in the UI."
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "Id of the user or team who created the job. For user it would have prefix `user-` and for team `team-`. For example `user-8715b5d1-0e57-48d8-b826-ba728f0ac0c8`."
+          },
+          "storyboard": {
+            "description": "Storyboard object to be converted into a media",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Storyboard"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Date the job was created.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Date the job was updated.",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Any additional JSON data that should be attached to the job. It may be useful to add a specific client ID."
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "hash",
+          "ownerId",
+          "storyboard",
+          "createdAt"
+        ]
+      },
+      "RenderJobInitiatedEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "event"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO date when event was created",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "renderJob.initiated"
+            ]
+          },
+          "current": {
+            "$ref": "#/components/schemas/BaseRenderJob"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "createdAt",
+          "type",
+          "current"
+        ]
+      },
+      "RenderJobQueuedEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "event"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO date when event was created",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "renderJob.queued"
+            ]
+          },
+          "current": {
+            "$ref": "#/components/schemas/QueuedRenderJob"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "createdAt",
+          "type",
+          "current"
+        ]
+      },
+      "RenderJobProcessStartedEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "event"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO date when event was created",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "renderJob.processStarted"
+            ]
+          },
+          "previous": {
+            "$ref": "#/components/schemas/QueuedRenderJob"
+          },
+          "current": {
+            "$ref": "#/components/schemas/ProcessingRenderJob"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "createdAt",
+          "type",
+          "previous",
+          "current"
+        ]
+      },
+      "RenderJobCompletedEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "event"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO date when event was created",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "renderJob.completed"
+            ]
+          },
+          "previous": {
+            "$ref": "#/components/schemas/ProcessingRenderJob"
+          },
+          "current": {
+            "$ref": "#/components/schemas/CompletedRenderJob"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "createdAt",
+          "type",
+          "previous",
+          "current"
+        ]
+      },
+      "RenderJobCancelledEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "event"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO date when event was created",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "renderJob.cancelled"
+            ]
+          },
+          "previous": {
+            "$ref": "#/components/schemas/QueuedRenderJob"
+          },
+          "current": {
+            "$ref": "#/components/schemas/CancelledRenderJob"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "createdAt",
+          "type",
+          "previous",
+          "current"
+        ]
+      },
+      "RenderJobFailedEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string",
+            "enum": [
+              "event"
+            ]
+          },
+          "apiVersion": {
+            "type": "number",
+            "enum": [
+              1
+            ],
+            "description": "API schema version"
+          },
+          "livemode": {
+            "type": "boolean",
+            "description": "When true then production mode is enabled"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO date when event was created",
+            "example": "2023-09-15T22:00:00.000Z"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "renderJob.failed"
+            ]
+          },
+          "previous": {
+            "$ref": "#/components/schemas/ProcessingRenderJob"
+          },
+          "current": {
+            "$ref": "#/components/schemas/FailedRenderJob"
+          }
+        },
+        "required": [
+          "id",
+          "entity",
+          "apiVersion",
+          "livemode",
+          "createdAt",
+          "type",
+          "previous",
+          "current"
+        ]
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Aninix Postman Collection",
+    "url": "docs/b98558e14e50f0b6f2e779ff337029785256a2f379c43b4f345f7fe922409bfd-json"
+  }
+}

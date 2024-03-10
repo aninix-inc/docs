@@ -1,0 +1,39 @@
+---
+title: Webhooks Specification
+---
+
+Aninix sends a POST request to the specified URL with JSON in the request body. It will wait 60 seconds for an success response with a status of 200+. Otherwise, it will marked as failed by timeout.
+
+If the webhook request fails, Aninix will attempt to resend this webhook up to 5 times with a backoff strategy: 5, 10, 30, 60 and 120 minutes.
+
+After all 5 attempts have failed, the webhook for certain events will no longer be triggered.
+
+> All necessary security tokens will be defined and implemented soon (TBD). Also we would defined the endpoint and docs for how to get updated job if necessary (TBD).
+
+## Webhook handler example written in typescript using nestjs framework
+
+> It saves file to the local folder
+
+```ts
+import { Body, Controller, Post } from '@nestjs/common'
+import * as fs from 'fs'
+import { request } from 'http'
+
+@Controller('webhooks/aninix')
+class AninixWebhookController {
+  @Post()
+  async handle(@Body() event: WebhookEvent): Promise<void> {
+    if (event.type === 'renderJob.completed') {
+      const { fileUrl } = event.current
+      const filePath = `some-local-path/${event.current.id}.mp4`
+      const fileStream = fs.createWriteStream(filePath)
+
+      return new Promise<void>((resolve, reject) => {
+        request(fileUrl).pipe(fileStream).on('error', reject)
+        fileStream.on('error', reject)
+        fileStream.on('finish', resolve)
+      })
+    }
+  }
+}
+```

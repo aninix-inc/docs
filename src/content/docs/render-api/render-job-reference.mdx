@@ -1,0 +1,212 @@
+---
+title: Render Job Reference
+---
+
+TBD
+
+```ts
+type UUID = string
+
+/**
+ * Full url including protocol
+ */
+type Url = string
+
+/**
+ * Date in stringified ISO format
+ */
+type Date = string
+
+/**
+ * Should include extension.
+ */
+type FilePathAndName = string
+
+type AudioOptions = {
+  /**
+   * Audio file name to be get
+   */
+  audio?: FilePathAndName
+
+  /**
+   * Audio bitrate in kbps
+   * @example 192
+   * @default 192
+   */
+  audioBitrate?: number
+}
+type Mp4RenderOptions = AudioOptions & {
+  format: 'mp4'
+
+  /**
+   * Video bitrate in kbps
+   * @example 4000
+   * @default 4000
+   */
+  videoBitrate?: number
+
+  /**
+   * Default is 60
+   */
+  fps?: number
+}
+type WebmRenderOptions = AudioOptions & {
+  format: 'webm'
+
+  /**
+   * Video bitrate in kbps
+   * @example 4000
+   * @default 4000
+   */
+  videoBitrate?: number
+
+  /**
+   * Default is 60
+   */
+  fps?: number
+}
+type GifRenderOptions = {
+  format: 'gif'
+
+  /**
+   * Default is 60 but max for gifs are 50 so it would be caped by 50.
+   */
+  fps?: number
+}
+type RenderProject = {
+  /**
+   * Path to json file of the snapshot to be rendered
+   */
+  snapshot: FilePathAndName
+
+  /**
+   * Scale factor to resize final video.
+   * @example 0.5, 1, 2, 3, 4
+   * @default 1
+   */
+  scaleFactor?: number
+
+  /**
+   * Allows cut the left part of the project.
+   */
+  startInSeconds?: number
+
+  /**
+   * Allows cut the right part of the project.
+   */
+  endInSeconds?: number
+}
+type Storyboard = {
+  projects: RenderProject[]
+
+  /**
+   * Includes parameters for the final video.
+   * For example, format type, frames per second, bitrate or quality. Check the RenderOptions object for details.
+   */
+  renderOptions: Mp4RenderOptions | WebmRenderOptions | GifRenderOptions
+}
+
+type BaseRenderJob = {
+  id: UUID
+
+  entity: 'renderJob'
+
+  /**
+   * Hash of storyboard project IDs and audio name.
+   * This allows to get a render jobs for selected frames in the UI.
+   */
+  hash: string
+
+  /**
+   * Human readable name of the job. Can be used for the client side.
+   */
+  name?: string
+
+  /**
+   * Id of the user or team who created the job.
+   * For user it would have prefix `user-` and for team `team-`.
+   * For example `user-8715b5d1-0e57-48d8-b826-ba728f0ac0c8`.
+   */
+  ownerId?: string
+
+  /**
+   * Storyboard object to be converted into a media
+   */
+  storyboard: Storyboard
+
+  /**
+   * Date the job was created.
+   */
+  createdAt: Date
+
+  /**
+   * Date the job was updated.
+   */
+  updatedAt?: Date
+
+  /**
+   * Any additional JSON data that should be attached to the job.
+   * It may be useful to add a specific client ID.
+   */
+  metadata?: Record<string, unknown>
+}
+
+type QueuedRenderJob = BaseRenderJob & {
+  status: 'queued'
+
+  /**
+   * Make a POST request to this url to cancel the render job.
+   */
+  cancelUrl: Url
+}
+
+type ProcessingRenderJob = BaseRenderJob & {
+  status: 'processing'
+}
+
+type CompletedRenderJob = BaseRenderJob & {
+  status: 'completed'
+
+  /**
+   * Used to load a rendered file. Streaming is supported.
+   * File URL is available for 7 days. If you need to refresh it you have to send GET request to the `RenderJob` endpount (TBD).
+   */
+  fileUrl: Url
+}
+
+type CancelledRenderJob = BaseRenderJob & {
+  status: 'cancelled'
+
+  /**
+   * Make a POST request to this url to restart the render job.
+   */
+  restartUrl: Url
+}
+
+/**
+ * Before moving to this status Aninix will try to rerender video up to 3 times with exponential backoff.
+ * Only after all 3 failed attempts RenderJob would be marked as `failed`.
+ */
+type FailedRenderJob = BaseRenderJob & {
+  status: 'failed'
+  failReason: string
+  failMessage: string
+
+  /**
+   * Make a POST request to this url to try to retry the rendering job.
+   */
+  retryUrl: Url
+}
+
+/**
+ * Job is always created in `queued` status.
+ * Once worker grab job it will move to `rendering` status.
+ * When render is completed then it would be marked in `completed` status.
+ */
+type RenderJob =
+  | QueuedRenderJob
+  | ProcessingRenderJob
+  | CompletedRenderJob
+  | CancelledRenderJob
+  | FailedRenderJob
+```
