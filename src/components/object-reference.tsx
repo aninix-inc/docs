@@ -150,8 +150,14 @@ export const ObjectReference: React.FC<
       </summary>
 
       {Object.entries(object.properties).map(([key, value]) => (
-        // @ts-ignore
-        <Leaf schema={localSchema} id={key} type={value} parent={object} />
+        <Leaf
+          key={key}
+          schema={localSchema}
+          id={key}
+          // @ts-ignore
+          type={value}
+          parent={object}
+        />
       ))}
 
       {children}
