@@ -23,7 +23,7 @@ export const OpenApi: React.FC<{ children?: React.ReactNode }> = ({
   overflow-y: auto;
 }`,
             spec: {
-              url: import.meta.env.PUBLIC_API_URL,
+              url: import.meta.env.PUBLIC_API_DOCS_URL,
             },
           }}
         />
