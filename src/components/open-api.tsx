@@ -1,18 +1,35 @@
 import { ApiReferenceReact } from '@scalar/api-reference-react'
 import * as React from 'react'
+import { createPortal } from 'react-dom'
 
-export const OpenApi: React.FC = () => (
-  <ApiReferenceReact
-    configuration={{
-      customCss: `
+export const OpenApi: React.FC<{ children?: React.ReactNode }> = ({
+  children,
+}) => {
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  const sidebar = containerRef.current?.querySelector('.references-header')
+
+  return (
+    <>
+      <div ref={containerRef}>
+        <ApiReferenceReact
+          configuration={{
+            customCss: `
 .scalar-api-reference {
-  height: auto !important;
+  /* height: calc(100dvh - 48px) !important; */
+}
+
+/* Make scrollable section in center when making requests */
+.custom-scroll {
+  overflow-y: auto;
 }`,
-      showSidebar: false,
-      spec: {
-        // url: 'https://petstore.swagger.io/v2/swagger.json',
-        url: 'http://localhost:3000/docs/b98558e14e50f0b6f2e779ff337029785256a2f379c43b4f345f7fe922409bfd-json',
-      },
-    }}
-  />
-)
+            spec: {
+              url: import.meta.env.PUBLIC_API_URL,
+            },
+          }}
+        />
+      </div>
+
+      {sidebar != null && createPortal(children, sidebar)}
+    </>
+  )
+}
