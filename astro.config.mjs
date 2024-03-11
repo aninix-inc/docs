@@ -22,6 +22,9 @@ export default defineConfig({
         },
       ],
       customCss: ['./src/tailwind.css'],
+      components: {
+        Pagination: './src/components/overriders/pagination.astro',
+      },
     }),
     tailwind(),
     react(),

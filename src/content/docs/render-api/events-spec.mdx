@@ -12,7 +12,7 @@ Every event includes 2 object states: `current` and `previous`. Aninix sends the
 
 For example, the status of `RenderJob` has changed from `processing` to `completed`, then the event of the following format will be sent:
 
-```json {9-10} {19-20}
+```json {9-10} {18-19}
 {
   "id": "7af973c4-4ea2-41c0-bc17-dd6dccab99d3",
   "entity": "event",
@@ -30,8 +30,8 @@ For example, the status of `RenderJob` has changed from `processing` to `complet
     "name": "Sample project #1 🚀",
     "storyboard": { ... },
     "createdAt": "2024-02-18T18:30:00.000Z",
-    "updatedAt": "2024-02-18T18:35:00.000Z",
     "status": "completed",
+    "updatedAt": "2024-02-18T18:35:00.000Z",
     "fileUrl": "https://static.aninix.com/8b5d1120-0419-41cd-9c09-f56b29144a88.mp4",
     "metadata": { ... }
   }
@@ -58,7 +58,7 @@ sequenceDiagram
     Aninix API->>Client: InitiatedEvent sent
     Aninix API->>Client: ResourceUpdate event sent
 `}
-  client:idle
+  client:only
 />
 
 The simplest example of use case:
