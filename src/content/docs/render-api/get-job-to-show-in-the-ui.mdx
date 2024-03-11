@@ -1,0 +1,48 @@
+---
+title: Get the Render Job to show in the UI
+---
+
+All render jobs have a unique hash, which is constructed by `sha256([...projectIds, audioName].join('-'))` function. This provides a deterministic parameter by which you can identify identical render jobs.
+
+You need to make a POST request to get this parameter. See more info at [reference](/reference#tag/render-api/post/hashes/render-job).
+
+Once you have this hash, you can make a GET request to find [all jobs](/reference#tag/render-api/get/render-jobs). The jobs are always returned in descending order by `updatedAt`.
+
+So if the first returned job is not in final status, you can take it to display in the UI.
+
+### Example flow using fetch
+
+:::note
+It doesn't handle errors in the responses
+:::
+
+```ts
+async function getTheLatestActiveJob(payload: {
+  projectIds: string[]
+  audioName: string
+}): Promise<RenderJob | null> {
+  const hash = await fetch('https://apipi.aninix.com/hashes/render-job', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  }).then((response) => response.json())
+
+  const renderJobs = await fetch(
+    `https://apipi.aninix.com/render-jobs?hash=${hash}&limit=1`
+  ).then((response) => response.json())
+
+  const renderJob = renderJobs[0]
+
+  if (
+    renderJob?.status !== 'completed' ||
+    renderJob?.status !== 'cancelled' ||
+    renderJob?.status !== 'failed'
+  ) {
+    return renderJob
+  }
+
+  return null
+}
+```
