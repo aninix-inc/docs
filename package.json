@@ -32,11 +32,11 @@
     "typescript": "^5.4.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.0",
+    "@biomejs/biome": "^1.8.1",
     "@types/ramda": "^0.30.0",
     "openapi-typescript": "^6.7.4",
-    "prettier": "^3.3.1",
+    "prettier": "^3.3.2",
     "prettier-plugin-organize-imports": "^3.2.4",
-    "typescript-json-schema": "^0.63.0"
+    "typescript-json-schema": "^0.64.0"
   }
 }
