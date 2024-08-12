@@ -13,22 +13,22 @@
     "generate:types": "curl https://dev-api.aninix.com/docs/b98558e14e50f0b6f2e779ff337029785256a2f379c43b4f345f7fe922409bfd-json > ./src/open-api/schema.json"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.1",
-    "@astrojs/react": "^3.6.1",
-    "@astrojs/starlight": "^0.25.3",
+    "@astrojs/check": "^0.9.2",
+    "@astrojs/react": "^3.6.2",
+    "@astrojs/starlight": "^0.25.4",
     "@astrojs/starlight-tailwind": "^2.0.1",
     "@astrojs/tailwind": "^5.1.0",
-    "@scalar/api-reference-react": "^0.3.67",
+    "@scalar/api-reference-react": "^0.3.72",
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
-    "astro": "^4.13.1",
+    "astro": "^4.13.3",
     "classnames": "^2.5.1",
     "mermaid": "^10.9.0",
     "ramda": "^0.30.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sharp": "^0.33.2",
-    "tailwindcss": "^3.4.7",
+    "tailwindcss": "^3.4.9",
     "typescript": "^5.5.4"
   },
   "devDependencies": {
