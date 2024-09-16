@@ -32,7 +32,7 @@
     "typescript": "^5.5.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
+    "@biomejs/biome": "^1.9.1",
     "@types/ramda": "^0.30.2",
     "openapi-typescript": "^7.4.0",
     "prettier": "^3.3.3",
