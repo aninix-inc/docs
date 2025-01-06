@@ -21,7 +21,7 @@
     "@scalar/api-reference-react": "^0.4.8",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
-    "astro": "^5.1.1",
+    "astro": "^5.1.2",
     "classnames": "^2.5.1",
     "mermaid": "^11.4.1",
     "ramda": "^0.30.1",
